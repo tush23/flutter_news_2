@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutternews2/views/home.dart';
+import 'package:flutter/services.dart';
+import 'package:flutternews2/configer/index.dart';
+import 'package:flutternews2/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(Main());
 
-class Main extends StatefulWidget {
-  Main({Key key}) : super(key: key);
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-  @override
-  _MainState createState() => _MainState();
-}
 
-class _MainState extends State<Main> {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "FlutterNews",
-      theme: ThemeData(
-        primaryColor: Colors.white
-      ),
-      home: Home(),
-    );
-  }
+  //*for transparent status bar
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent
+      )
+  );
+  Constants.perfs = await SharedPreferences.getInstance();
+
+  runApp(ConfigerPage());
 }

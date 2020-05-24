@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutternews2/custom/custom_Scaffold.dart';
 import 'package:flutternews2/helper/news.dart';
 import 'package:flutternews2/models/ArticleModel.dart';
+import 'package:flutternews2/utils/constants.dart';
 
 import 'news_tile.dart';
 
@@ -22,6 +24,9 @@ class _CategoryNewsState extends State<CategoryNews> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      getCategoryNews();
+    });
     getCategoryNews(); 
 
   }
@@ -29,42 +34,18 @@ class _CategoryNewsState extends State<CategoryNews> {
     CategoryNewsHelper newsClass = CategoryNewsHelper();
     await newsClass.getCategoryNews(widget.category);
     articles = newsClass.mNews;
-    print(articles);
+    //print("#########################");
+    //print(articles[2].title);
     setState(() {
       _loading = false;
+      print(articles.length);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title:Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text("Flutter",style: TextStyle(
-              fontFamily: 'Product Sans'
-             ),
-            ),
-            Text("News",style: TextStyle(
-                color: Colors.blue[600],
-                fontFamily: 'Product Sans',
-              ),
-            )
-          ],
-        ),
-        actions: <Widget>[
-          Opacity(
-              opacity: 0,
-              child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Icon(Icons.desktop_windows),
-            ),
-          )
-        ],
-        elevation: 0.0, 
-      ),
+    return CustomScaffold(
+        title: Constants.app_name,
       body: _loading ? Center(
         child: Container(
           child: CircularProgressIndicator(),
@@ -84,11 +65,15 @@ class _CategoryNewsState extends State<CategoryNews> {
                   shrinkWrap: true,
                   physics: ClampingScrollPhysics(),
                   itemBuilder: (context,index){
-                    return NewsTile(
-                      imageURL:articles[index].urlToImage,
-                      title:articles[index].title,
+                    return articles != null
+                        ? NewsTile(
+                      imageURL: articles[index].urlToImage,
+                      title: articles[index].title,
                       articleURL: articles[index].url,
-                      disc:articles[index].description);
+                      disc: articles[index].description,
+                      sourceName: articles[index].sourceName,
+                      publishedAt: articles[index].publishedAt,)
+                        : CircularProgressIndicator();
                   } ,
                 )
               )
